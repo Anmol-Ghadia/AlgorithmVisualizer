@@ -3,10 +3,29 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  background-color: gray;
+  /* box-sizing: border-box; */
 }
 
 h1 {
   color: #333;
   text-align: center;
 }
-  
+
+#cell_container {
+  width: 600px;
+  height: 600px;
+  background-color: greenyellow;
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid black;
+}
+
+.unit_cell {
+  background-color: transparent;
+  border: 1px solid orange;
+}
+
+.unit_cell:hover {
+  background-color: black;
+}
