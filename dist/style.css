@@ -1,10 +1,13 @@
 /* styles.css */
-body {
-  font-family: Arial, sans-serif;
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
   background-color: gray;
-  /* box-sizing: border-box; */
 }
 
 h1 {
@@ -13,9 +16,9 @@ h1 {
 }
 
 #cell_container {
-  width: 600px;
-  height: 600px;
-  background-color: greenyellow;
+  width: min(80vw,80vh);
+  height: min(80vw,80vh);
+  background-color: gray;
   display: flex;
   flex-wrap: wrap;
   border: 1px solid black;
@@ -23,7 +26,7 @@ h1 {
 
 .unit_cell {
   background-color: transparent;
-  border: 1px solid orange;
+  border: 1px solid black;
 }
 
 .unit_cell:hover {
