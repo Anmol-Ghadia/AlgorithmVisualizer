@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "target": "ES6",
+      "module": "ESNext",
+      "strict": true,
+      "esModuleInterop": true,
+      "outDir": "dist/scripts",
+      "rootDir": "src"
+    },
+    "exclude": [
+      "node_modules"
+    ]
+  }
+  
