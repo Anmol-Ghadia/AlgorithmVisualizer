@@ -1,4 +1,10 @@
-import { UnitCell, UnitCell2DArray, CellContainer, StateClass } from './classes.js';
+import { UnitCell,
+    UnitCell2DArray,
+    CellContainer,
+    StateClass,
+    coordinates,
+    store2DArrayData } from './classes.js';
+import {breadthFirstSearch} from './breadthFirstSearch.js'
 
 let STATE: StateClass;
 let CELL_ARRAY : UnitCell2DArray;
@@ -12,9 +18,30 @@ function init() {
     
     if (!setCellContinerGlobals()) return;
     if (!setSliderGlobals()) return;
+    if (!clearBoardInit()) return;
+
     STATE = new StateClass(CELL_ARRAY,CELL_CONTAINER);
     
     if (!makeAndPopulateCells(parseInt(SLIDER.value))) return;
+}
+
+// Returns true if clear button can be properly set
+function clearBoardInit() {
+    let button = document.getElementById('clear_board_button');
+    if (button == null) {
+        console.log('ERROR: 102');
+        return false;
+    }
+    button.addEventListener('click', () => {
+        // STATE.clearBoard();
+        generateRandomMaze();
+        setTimeout(()=>{
+            STATE.updateMode(3);
+            breadthFirstSearch(STATE);
+        },2000)
+        
+    })
+    return true;
 }
 
 // Returns false if failed, otherwise sets global(s) for container
@@ -47,7 +74,7 @@ function setSliderGlobals() {
 // Handles the updates of changing the slider
 function sliderUpdated() {
     // Dispose old cells
-    CELL_ARRAY.clear();
+    STATE.reset();
     // populate new cells
     makeAndPopulateCells(parseInt(SLIDER.value));
 }
@@ -72,4 +99,24 @@ function makeAndPopulateCells(numberOfCells:number) : boolean {
     }
 
     return true;
+}
+
+function generateRandomMaze() {
+    let start = STATE.getCellArray().getStart();
+    let end = STATE.getCellArray().getEnd();
+    for (let x = 0; x < STATE.getCellArray().getBoardSize(); x++) {
+        for (let y=0; y < STATE.getCellArray().getBoardSize();y++) {
+            if (isSameCordinate(start,[x,y]) || isSameCordinate(end,[x,y])) {
+                continue;
+            }
+            let rand = Math.random();
+            if (rand > 0.7) {
+                STATE.getCellArray().setWall([x,y]);
+            } 
+        }
+    }
+}
+
+function isSameCordinate(coord1:coordinates,coord2:coordinates) {
+    return (coord1[0]==coord2[0] && coord1[1]==coord2[1]);
 }

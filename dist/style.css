@@ -30,5 +30,17 @@ h1 {
 }
 
 .unit_cell:hover {
-  background-color: black;
+  background-color: orange;
+}
+
+.unit_cell_wall {
+  background-color: black; 
+}
+
+.unit_cell_start {
+  background-color: green; 
+}
+
+.unit_cell_end {
+  background-color: red; 
 }
