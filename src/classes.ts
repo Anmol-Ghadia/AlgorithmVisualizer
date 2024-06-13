@@ -35,18 +35,22 @@ class CellContainer {
     }
 }
 
+type coordinates = [number,number];
+
 // Contains reference to all cells
 // NOTE: Assumes that it is a square
 class UnitCell2DArray {
     
-    private array: UnitCell[];    // Array of cells
-    private startCell: number[];  // Coordinates of start cell
-    private endCell: number[];    // Coorrdinates of end cell
+    private array: UnitCell[];       // Array of cells
+    private startCell: coordinates;     // Coordinates of start cell
+    private endCell: coordinates;       // Coordinates of end cell
+    private wallCell: coordinates[];    // Coordinates of wall cells
 
     constructor() {
         this.array = [];
-        this.startCell = [];
-        this.endCell = [];
+        this.startCell = [-1,-1];
+        this.endCell = [-1,-1];
+        this.wallCell = [];
     }
 
     // Adds Cell to the array
@@ -61,8 +65,9 @@ class UnitCell2DArray {
             cell.getElement().remove();
         }
         this.array = [];
-        this.startCell = [];
-        this.endCell = [];
+        this.startCell = [-1,-1];
+        this.endCell = [-1,-1];
+        this.wallCell = [];
     }
 
     // Gets a cell at given coordinate
@@ -83,6 +88,34 @@ class UnitCell2DArray {
         this.endCell = [xCoord,yCoord];
         this.getCell(xCoord,yCoord).getElement().style.backgroundColor = "red";
         // TODO !!!
+    }
+
+    // Returns the index if wall is set 
+    //    -1 if not found
+    isWall(xCoord:number, yCoord:number) : number {
+        for (let i = 0; i < this.wallCell.length; i++) {
+            const coord = this.wallCell[i];
+            if (coord[0] == xCoord && coord[1] == yCoord) return i;
+        }
+        return -1;
+    }
+
+    // Sets the wall at given coordinates as wall cell
+    // If the cell is already a wall then it is removed
+    setWall(xCoord : number, yCoord: number) {
+        let wallIndex = this.isWall(xCoord,yCoord);
+        if (wallIndex == -1) {
+            // Setwall
+            this.wallCell.push([xCoord,yCoord]);
+            this.getCell(xCoord,yCoord).getElement().style.backgroundColor = "black"; // TODO !!!
+            console.log("Wall Array Size Increased:",this.wallCell.length);   
+        } else {
+            // remove from wall list
+            this.wallCell.splice(wallIndex,1);
+            this.getCell(xCoord,yCoord).getElement().style.backgroundColor = "white"; // TODO !!!
+            console.log("Wall Array Size Decreased:",this.wallCell.length);
+        }
+        console.log(this.wallCell);
     }
 }
 
@@ -109,8 +142,7 @@ class UnitCell {
 // 0 is waiting for user to select starting point
 // 1 is waiting for user to select ending point
 // 2 is waiting for user to select walls
-// 3 is waiting for user to break walls
-type ModeType = 0 | 1 | 2 | 3;
+type ModeType = 0 | 1 | 2;
 
 // Represents the current state of program
 class StateClass {
@@ -131,13 +163,9 @@ class StateClass {
     }
 
     // handles mousedown events based on current mode
-    handleMouseDown(e: Event) {
-        if (this.mode != 0 && this.mode != 1) {
-            // TODO !!!
-            return;
-        }
+    handleMouseDown(eve: Event) {
 
-        let event = e as MouseEvent;
+        let event = eve as MouseEvent;
         
         let deltaX = event.clientX - this.cellContainer.getX();
         let deltaY = event.clientY - this.cellContainer.getY();
@@ -147,14 +175,21 @@ class StateClass {
         let xCoord = Math.floor(deltaX / unit_width);
         let yCoord = Math.floor(deltaY / unit_width);
 
-        if (this.mode == 0) {
-            console.log("Start set at:",xCoord,yCoord);
-            this.cellArray.setStart(xCoord,yCoord);
-            this.updateMode(1);
-        } else {
-            console.log("End set at:",xCoord,yCoord);
-            this.cellArray.setEnd(xCoord,yCoord);
-            this.updateMode(2);
+        switch (this.mode) {
+            case 0:
+                console.log("Start set at:",xCoord,yCoord); // TODO !!! add logging
+                this.cellArray.setStart(xCoord,yCoord);
+                this.updateMode(1);    
+                break;
+            case 1:
+                console.log("End set at:",xCoord,yCoord); // TODO !!! add logging
+                this.cellArray.setEnd(xCoord,yCoord);
+                this.updateMode(2);
+                break;
+            default:
+                console.log("Wall toggled at:", xCoord,yCoord); // TODO !!! add logging
+                this.cellArray.setWall(xCoord,yCoord);
+                break;
         }
     }
 

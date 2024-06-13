@@ -28,7 +28,7 @@ function setCellContinerGlobals() : boolean {
     CELL_CONTAINER = new CellContainer(temp_element);
     CELL_ARRAY = new UnitCell2DArray();
 
-    CELL_CONTAINER.getElement().addEventListener("click",(event)=>{STATE.handleMouseDown(event)});
+    CELL_CONTAINER.getElement().addEventListener("mousedown",(event)=>{STATE.handleMouseDown(event)});
 
     return true;
 }
