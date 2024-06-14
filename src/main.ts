@@ -4,7 +4,12 @@ import { UnitCell,
     StateClass,
     coordinates,
     store2DArrayData } from './classes.js';
-import {breadthFirstSearch,depthFirstSearch} from './breadthAndDepthFirstSearch.js'
+import {
+    breadthFirstSearch,
+    depthFirstSearch,
+    randomCellSearch,
+    randomDirectionSearch
+} from './searchAlgorithms.js'
 
 let STATE: StateClass;
 let CELL_ARRAY : UnitCell2DArray;
@@ -21,6 +26,8 @@ function init() {
     if (!clearBoardInit()) return;
     if (!BFSInit()) return;
     if (!DFSInit()) return;
+    if (!randomCellSearchInit()) return;
+    if (!randomDirectionSearchInit()) return;
     if (!randomMazeInit()) return;
     if (!setSpeedSlider()) return;
 
@@ -53,6 +60,34 @@ function DFSInit() {
     button.addEventListener('click', () => {
         STATE.updateMode(3);
         depthFirstSearch(STATE);
+    })
+    return true;
+}
+
+// Returns true if Random Cell Search button can be properly set
+function randomCellSearchInit() {
+    let button = document.getElementById('Random_cell_button');
+    if (button == null) {
+        console.log('ERROR: 106');
+        return false;
+    }
+    button.addEventListener('click', () => {
+        STATE.updateMode(3);
+        randomCellSearch(STATE);
+    })
+    return true;
+}
+
+// Returns true if Random Cell Search button can be properly set
+function randomDirectionSearchInit() {
+    let button = document.getElementById('Random_direction_button');
+    if (button == null) {
+        console.log('ERROR: 107');
+        return false;
+    }
+    button.addEventListener('click', () => {
+        STATE.updateMode(3);
+        randomDirectionSearch(STATE);
     })
     return true;
 }

@@ -1,19 +1,37 @@
-export {breadthFirstSearch,depthFirstSearch};
-import {StateClass,coordinates,store2DArrayData} from './classes.js';
+export {
+    DataStructure,
+    Queue,
+    Stack,
+    randomRemove,
+    randomPushAll,
+    generalSearchAlgorithm
+}
+
+import {
+    StateClass,
+    coordinates,
+    store2DArrayData
+} from './classes.js';
 
 interface DataStructure {
+    // Basic
     length:number;
     push(coord:coordinates):void;
     remove():coordinates;
     contains(coord:coordinates):boolean;
-    get(index:number):coordinates; 
+    get(index:number):coordinates;
+
+    // Advanced
+    pushAll(arr:coordinates[]):void;
+    getLength():number;
+    removeIndex(index:number):coordinates;
 }
 
 // Queue for Coordinates
 // First in First out concept
 class Queue implements DataStructure{
     protected array: coordinates[];
-    public length: number;
+    length: number;
 
     constructor() {
         this.array = [];
@@ -42,13 +60,26 @@ class Queue implements DataStructure{
     get(index : number) : coordinates {
         return this.array[index];
     }
+
+    pushAll(arr:coordinates[]) {
+        arr.forEach(ele=>{this.push(ele)});
+    }
+
+    getLength() {
+        return this.length;
+    }
+
+    removeIndex(index:number): coordinates {
+        this.length = this.array.length-1;
+        return this.array.splice(index,1)[0];
+    }
 }
 
 // Stack data structure
 // Last in first out
 class Stack implements DataStructure {
     protected array: coordinates[];
-    public length: number;
+    length: number;
 
     constructor() {
         this.array = [];
@@ -77,16 +108,54 @@ class Stack implements DataStructure {
     get(index : number) : coordinates {
         return this.array[this.array.length-index-1];
     }
+
+    pushAll(arr:coordinates[]) {
+        arr.forEach(ele=>{this.push(ele)});
+    }
+
+    getLength(): number {
+        return this.length;
+    }
+
+    removeIndex(index: number): coordinates {
+        this.length = this.array.length-1;
+        return this.array.splice(this.array.length-index-1,1)[0];
+    }
 }
 
-function breadthFirstSearch(STATE:StateClass) {
-    let queue = new Queue();
-    generalSearchAlgorithm(STATE,queue);
+// Same as Queue data structure but remove()
+//    removes a random element
+class randomRemove extends Queue {
+    remove(): coordinates {
+        let size = super.getLength();
+        let randomIndex = Math.floor(Math.random()*size);
+        return super.removeIndex(randomIndex);
+    }
 }
 
-function depthFirstSearch(STATE:StateClass) {
-    let queue = new Stack();
-    generalSearchAlgorithm(STATE,queue);
+// same as Stack but when adding neighbours,
+//     they are added in a random order 
+class randomPushAll extends Stack {
+    pushAll(arr: coordinates[]): void {
+    let newArr = shuffleArray(arr);
+    newArr.forEach(ele=>{
+        super.push(ele);
+    })
+    }
+}
+
+
+function shuffleArray<T>(array: T[]): T[] {
+    // Create a copy of the array to avoid mutating the original array
+    const shuffledArray = array.slice();
+    
+    // Fisher-Yates shuffle algorithm
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }
+    
+    return shuffledArray;
 }
 
 // REQUIRES: UnitCell2DArray.isStartEndSet() == true &&
@@ -160,9 +229,7 @@ async function generalSearchAlgorithm(STATE: StateClass,toDoDataStructure: DataS
             // console.log("main cell:", currentCoordinate);
             // console.log("added to queue:",coord);
         }
-    neighbours.forEach(neighbour => {
-        toDoDataStructure.push(neighbour);
-    })
+        toDoDataStructure.pushAll(neighbours);
     }
     // TODO Find the shortest path
     if (endCell[0] == -1) {

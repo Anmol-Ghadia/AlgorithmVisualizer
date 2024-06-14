@@ -14,13 +14,19 @@
       <input type="range" name="number_of_cells" id="cell_count_slider"
         min="5" max="75" step="1" value="25">
     </label>
-    <label for="clear board">
+    <br>
+    <label for="simulation_speed"> Simulation Speed
+      <input type="range" name="simulation_speed" id="simulation_speed_slider"
+        min="0" max="10" step="1" value="0">
+    </label>
+    <br>
+    <label for="buttons">
       <button type="button" id="clear_board_button">clear</button>
       <button type="button" id="BFS_button">BFS</button>
       <button type="button" id="DFS_button">DFS</button>
+      <button type="button" id="Random_cell_button">Random Cell Search</button>
+      <button type="button" id="Random_direction_button">Random direction Search</button>
       <button type="button" id="random_maze_button">Generate Maze</button>
-      <input type="range" name="simulation_speed" id="simulation_speed_slider"
-        min="0" max="10" step="1" value="0">
     </label>
   </main>
 </body>
