@@ -20,14 +20,45 @@
         min="0" max="10" step="1" value="0">
     </label>
     <br>
-    <label for="buttons">
-      <button type="button" id="clear_board_button">clear</button>
+
+    <!-- radio buttons -->
+    <label for="bfs_radio">BFS
+      <input type="radio" id="bfs_radio" name="algorithm_radio" value="BFS" checked>
+    </label>
+    <label for="dfs_radio">DFS
+      <input type="radio" id="dfs_radio" name="algorithm_radio" value="DFS">
+    </label>
+    <label for="random_cell_radio">Random Cell
+      <input type="radio" id="random_cell_radio" name="algorithm_radio" value="randCell">
+    </label>
+    <label for="random_path_radio">Random Path
+      <input type="radio" id="random_path_radio" name="algorithm_radio" value="randPath">
+    </label>
+
+    <br>
+    <button type="button" id="random_maze_button">Generate Maze</button>
+    <button type="button" id="clear_board_button">clear</button>
+    <br>
+
+    <!-- Start button changes name to stop -->
+    <button type="button" id="start_button">Start</button>
+    <button type="button" id="pause_button" disabled>Pause</button>
+    <button type="button" id="step_button">Step</button>
+
+    <br>
+    <br>
+    <!--  Temp buttons for algo -->
+    <!-- <label for="buttons">
       <button type="button" id="BFS_button">BFS</button>
       <button type="button" id="DFS_button">DFS</button>
       <button type="button" id="Random_cell_button">Random Cell Search</button>
       <button type="button" id="Random_direction_button">Random direction Search</button>
-      <button type="button" id="random_maze_button">Generate Maze</button>
+      
     </label>
+    <br>
+    <button type="button" id="temporary_button">Single BFS</button>
+    <button type="button" id="simulation_toggle_button">play/pause</button>
+    <button type="button" id="simulation_next_button">next</button> -->
   </main>
 </body>
 <script src="./scripts/main.js" type="module"></script>

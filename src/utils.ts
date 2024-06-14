@@ -4,7 +4,8 @@ export {
     Stack,
     randomRemove,
     randomPushAll,
-    generalSearchAlgorithm
+    // generalSearchAlgorithm,
+    generalSearchClass
 }
 
 import {
@@ -158,49 +159,141 @@ function shuffleArray<T>(array: T[]): T[] {
     return shuffledArray;
 }
 
+// 0 means nothing set
+// 1 means can explore
+// 2 can find least path
+// 3 means search over
+type explorationMode = 0 | 1 | 2 | 3;
+
 // REQUIRES: UnitCell2DArray.isStartEndSet() == true &&
 //           StateClass.getMode() == 3
-async function generalSearchAlgorithm(STATE: StateClass,toDoDataStructure: DataStructure) {
-
-    // Add colouring for visited nodes
-    let boardSize = STATE.getCellArray().getBoardSize();
-    let endCell = [-1,-1];
-
-    // Initialization
-    let visited= new store2DArrayData(boardSize,false);
-    let distance = new store2DArrayData(boardSize,boardSize*boardSize+1);
+class generalSearchClass {
+    // Required
+    protected state : StateClass;
+    protected mode: explorationMode=0;
+    protected isSimulating: boolean = false;
     
-    toDoDataStructure.push(STATE.getCellArray().getStart());
-    distance.set(STATE.getCellArray().getStart(),0);
+    // Supplied by user
+    protected toDoDataStructure: DataStructure;
+    
 
-    // console.log("queue:");
-    // console.log(toDoDataStructure);
+    // Extras    
+    private endCell: coordinates = [-1,-1];
+    private visited: store2DArrayData<boolean>;
+    private distance: store2DArrayData<number>;
+    private boardSize: number;
+    private shortestPath: coordinates[]=[];
 
-    // Exploration
-    while (toDoDataStructure.length != 0) {
-        await new Promise(resolve => setTimeout(resolve, STATE.getSpeed()));
-        let currentCoordinate = toDoDataStructure.remove();;
+    constructor(state:StateClass,type:DataStructure) {
+        this.boardSize = state.getCellArray().getBoardSize();
+
+        this.visited= new store2DArrayData(this.boardSize,false);
+        this.distance = new store2DArrayData(
+            this.boardSize,
+            this.boardSize*this.boardSize+1);
+
+        this.state = state;
+        this.toDoDataStructure = type;
+    }
+
+    async computeAllwithDelay() {
+        this.isSimulating = true;
+        while (this.mode!=3 && this.isSimulating) {
+            if (this.state.getSpeed()!=0) {
+                await new Promise(resolve => setTimeout(resolve, this.state.getSpeed()));
+            }
+            this.computeOnce();
+        }
+    }
+
+    isPlaying():boolean {
+        return this.isSimulating;
+    }
+
+    toggle():boolean {
+        if (this.isPlaying()){
+            this.pause();
+            return true;
+        } else {
+            this.play();
+            return false;
+        }
+    }
+
+    play() {
+        this.computeAllwithDelay();
+    }
+
+    pause() {
+        this.isSimulating = false;
+    }
+    
+
+    computeOnce() {
+        console.log("computed once");
+        switch (this.mode) {
+            case 0:
+                this.initialize();
+                break;
+            case 1:
+                this.exploreOnce();
+                break;
+            case 2:
+                this.findLeastPathOnce();
+                break;
+            case 3:
+                // OVER
+                // !!! maybe notify user
+                break;
+            
+        }
+    }
+
+    // Initializes by adding the starting cell
+    // Returns true if successfull
+    private initialize() {
+        if (this.state.getCellArray().isStartEndSet()) {
+            this.toDoDataStructure.push(this.state.getCellArray().getStart());
+            this.distance.set(this.state.getCellArray().getStart(),0);
+            this.mode = 1;
+            // !!! maybe notify user
+        } else {
+            this.mode = 0;
+            // !!! maybe notify user
+        }
+    }
+
+    // REQUIRES mode==1
+    private exploreOnce() {
+        if (this.toDoDataStructure.length == 0 ) {
+            this.mode = 3;
+            return;
+        }
+        let currentCoordinate = this.toDoDataStructure.remove();;
         
 
-        if (STATE.getCellArray().isEnd(currentCoordinate)) {
+        if (this.state.getCellArray().isEnd(currentCoordinate)) {
             // Found end
-            distance.set(currentCoordinate,getLeastNeighbourDistance(currentCoordinate,distance,boardSize)+1);
+            this.distance.set(currentCoordinate,
+                getLeastNeighbourDistance(currentCoordinate,this.distance,this.boardSize)+1);
             // console.log("found end! at:",currentCoordinate);
-            endCell = currentCoordinate;
-            break;
+            this.endCell = currentCoordinate;
+            this.mode = 2
+            return; // Exploration over !!!
         }
 
         // Check if already visited
-        if (visited.get(currentCoordinate)) {
-            continue;
+        if (this.visited.get(currentCoordinate)) {
+            this.computeOnce();
+            return;
         }
 
-        visited.set(currentCoordinate,true);
-        let currentDistance = getLeastNeighbourDistance(currentCoordinate,distance,boardSize)+1;
-        distance.set(currentCoordinate,currentDistance);
+        this.visited.set(currentCoordinate,true);
+        let currentDistance = getLeastNeighbourDistance(currentCoordinate,this.distance,this.boardSize)+1;
+        this.distance.set(currentCoordinate,currentDistance);
         let color = "hsl(" + ((currentDistance%25)/25)*360 +",100%,50%)";
-        STATE.getCellArray().getCell(currentCoordinate).getElement().style.backgroundColor = color;
-        STATE.getCellArray().getCell(currentCoordinate).getElement().innerHTML = currentDistance.toString();
+        this.state.getCellArray().getCell(currentCoordinate).getElement().style.backgroundColor = color;
+        this.state.getCellArray().getCell(currentCoordinate).getElement().innerHTML = currentDistance.toString();
 
         let potentialNeighbours:coordinates[] = [
             [currentCoordinate[0],currentCoordinate[1]-1],  // North
@@ -211,63 +304,48 @@ async function generalSearchAlgorithm(STATE: StateClass,toDoDataStructure: DataS
         for (let i = 0; i < potentialNeighbours.length; i++) {
             let coord = potentialNeighbours[i];
             // Check if the coordinates are outside the board
-            if (coord[0]<0 || coord[1]<0 || coord[0]>=boardSize || coord[1]>=boardSize) {
+            if (coord[0]<0 || coord[1]<0 || 
+                coord[0]>=this.boardSize || coord[1]>=this.boardSize) {
                 continue;
             }
 
             // Check if visited
-            if (visited.get(coord)) {
+            if (this.visited.get(coord)) {
                 continue;
             }
 
             // check if the coordinates containe a wall cell
-            if (STATE.getCellArray().isWall(coord) != -1) {
+            if (this.state.getCellArray().isWall(coord) != -1) {
                 continue;
             }
 
             neighbours.push([coord[0],coord[1]]);
-            // console.log("main cell:", currentCoordinate);
-            // console.log("added to queue:",coord);
         }
-        toDoDataStructure.pushAll(neighbours);
-    }
-    // TODO Find the shortest path
-    if (endCell[0] == -1) {
-        // console.log("end cell [-1,-1]");
-        // Did not find the end !!!
-        return;
-    }
-    // console.log("end cell != [-1,-1]");
-    // FOUND THE END
-    let shortestPath : coordinates[] = [];
-
-    shortestPath.push([endCell[0],endCell[1]]);
-    // console.log('end cell:',endCell);
-    // console.log('start cell',STATE.getCellArray().getStart());
-
-    while (!isSameCordinate(shortestPath[shortestPath.length-1],STATE.getCellArray().getStart())) {
-        let currentCoord = shortestPath[shortestPath.length-1];
-        // console.log("shortest Path cell:",currentCoord);
-        STATE.getCellArray().getCell(currentCoord).getElement().innerHTML = distance.get(currentCoord).toString();
-        STATE.getCellArray().getCell(currentCoord).getElement().style.backgroundColor = 'orange';
-        // console.log("distance: ",distance.get(currentCoord).toString());
-        shortestPath.push(getNeighbourWithLeastDistance(currentCoord,distance,boardSize));
+        this.toDoDataStructure.pushAll(neighbours);
     }
 
-    STATE.getCellArray().getCell(shortestPath[shortestPath.length-1]).getElement().innerHTML
-     = distance.get(shortestPath[shortestPath.length-1]).toString();
+    // REQUIRES mode==2
+    private findLeastPathOnce() {
+
+        this.shortestPath.push([this.endCell[0],this.endCell[1]]);
+
+        while (!isSameCordinate(this.shortestPath[this.shortestPath.length-1],this.state.getCellArray().getStart())) {
+            let currentCoord = this.shortestPath[this.shortestPath.length-1];
+            // console.log("shortest Path cell:",currentCoord);
+            this.state.getCellArray().getCell(currentCoord).getElement().innerHTML = this.distance.get(currentCoord).toString();
+            this.state.getCellArray().getCell(currentCoord).getElement().style.backgroundColor = 'orange';
+            // console.log("distance: ",distance.get(currentCoord).toString());
+            this.shortestPath.push(getNeighbourWithLeastDistance(currentCoord,this.distance,this.boardSize));
+        }
+        this.mode = 3;
+
+        this.state.getCellArray().getCell(this.shortestPath[this.shortestPath.length-1]).getElement().innerHTML
+        = this.distance.get(this.shortestPath[this.shortestPath.length-1]).toString();
+    }
 }
 
 function isSameCordinate(coord1:coordinates,coord2:coordinates) {
     return (coord1[0]==coord2[0] && coord1[1]==coord2[1]);
-}
-
-// Returns true if th coord is contained in arr
-function arrayContains(arr: coordinates[], coord: coordinates) : boolean {
-    for (let i=0; i<arr.length; i++) {
-        if (coord[0]==arr[i][0] && coord[1]==arr[i][1]) return true;
-    }
-    return false;
 }
 
 function getLeastNeighbourDistance(currentCoordinate:coordinates,distance:store2DArrayData<number>,boardSize:number) {
