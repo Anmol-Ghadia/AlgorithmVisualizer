@@ -4,7 +4,7 @@ import { UnitCell,
     StateClass,
     coordinates,
     store2DArrayData } from './classes.js';
-import {breadthFirstSearch} from './breadthFirstSearch.js'
+import {breadthFirstSearch,depthFirstSearch} from './breadthAndDepthFirstSearch.js'
 
 let STATE: StateClass;
 let CELL_ARRAY : UnitCell2DArray;
@@ -17,12 +17,57 @@ addEventListener('DOMContentLoaded',init);
 function init() {
     
     if (!setCellContinerGlobals()) return;
-    if (!setSliderGlobals()) return;
+    if (!setCellCountSlider()) return;
     if (!clearBoardInit()) return;
+    if (!BFSInit()) return;
+    if (!DFSInit()) return;
+    if (!randomMazeInit()) return;
+    if (!setSpeedSlider()) return;
 
     STATE = new StateClass(CELL_ARRAY,CELL_CONTAINER);
     
     if (!makeAndPopulateCells(parseInt(SLIDER.value))) return;
+}
+
+// Returns true if BFS button can be properly set
+function BFSInit() {
+    let button = document.getElementById('BFS_button');
+    if (button == null) {
+        console.log('ERROR: 103');
+        return false;
+    }
+    button.addEventListener('click', () => {
+        STATE.updateMode(3);
+        breadthFirstSearch(STATE);
+    })
+    return true;
+}
+
+// Returns true if DFS button can be properly set
+function DFSInit() {
+    let button = document.getElementById('DFS_button');
+    if (button == null) {
+        console.log('ERROR: 105');
+        return false;
+    }
+    button.addEventListener('click', () => {
+        STATE.updateMode(3);
+        depthFirstSearch(STATE);
+    })
+    return true;
+}
+
+// Returns true if Generate Random maze button can be properly set
+function randomMazeInit() {
+    let button = document.getElementById('random_maze_button');
+    if (button == null) {
+        console.log('ERROR: 104');
+        return false;
+    }
+    button.addEventListener('click', () => {
+        generateRandomMaze();
+    })
+    return true;
 }
 
 // Returns true if clear button can be properly set
@@ -33,13 +78,7 @@ function clearBoardInit() {
         return false;
     }
     button.addEventListener('click', () => {
-        // STATE.clearBoard();
-        generateRandomMaze();
-        setTimeout(()=>{
-            STATE.updateMode(3);
-            breadthFirstSearch(STATE);
-        },2000)
-        
+        STATE.clearBoard();
     })
     return true;
 }
@@ -61,22 +100,30 @@ function setCellContinerGlobals() : boolean {
 }
 
 // Returns false if failed, otherwise sets global(s) for slider
-function setSliderGlobals() {
+function setCellCountSlider() {
     SLIDER = document.getElementById('cell_count_slider')! as HTMLInputElement;
     if (SLIDER == null) {
         console.log('ERROR: 101');
         return false
     }
-    SLIDER.addEventListener('input',sliderUpdated);
+    SLIDER.addEventListener('input',()=>{
+        STATE.reset();
+        makeAndPopulateCells(parseInt(SLIDER.value));
+    });
     return true;
 }
 
-// Handles the updates of changing the slider
-function sliderUpdated() {
-    // Dispose old cells
-    STATE.reset();
-    // populate new cells
-    makeAndPopulateCells(parseInt(SLIDER.value));
+// Returns false if failed, otherwise initializes global(s) for slider
+function setSpeedSlider() {
+    let slider = document.getElementById('simulation_speed_slider')! as HTMLInputElement;
+    if (slider == null) {
+        console.log('ERROR: 104');
+        return false
+    }
+    slider.addEventListener('input',()=>{
+        STATE.setSpeed(parseInt(slider.value)*100);
+    });
+    return true;
 }
 
 // Populates the cells according to the number of cells in one direction

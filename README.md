@@ -25,3 +25,6 @@
 1) 100: Element with `id="cell_container"` is null during init
 1) 101: Element with `id="cell_count_slider"` is null during init
 1) 102: Element with `id="clear_board_button"` is null during init
+1) 103: Element with `id="BFS_button"` is null during init
+1) 104: Element with `id="simulation_speed_slider"` is null during init
+1) 105: Element with `id="DFS_button"` is null during init

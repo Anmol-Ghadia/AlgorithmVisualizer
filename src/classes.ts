@@ -76,11 +76,16 @@ class UnitCell2DArray {
     }
 
     // Resets the current board and preserves the cells
+    // Resets backgroundColor of every cell
     clearStartEndWall() {
         this.getCell(this.startCell).getElement().classList.remove('unit_cell_start');
         this.getCell(this.endCell).getElement().classList.remove('unit_cell_end');
         this.wallCell.forEach(coord => {
             this.getCell(coord).getElement().classList.remove('unit_cell_wall');
+        })
+        this.array.forEach(cell => {
+            cell.getElement().style.backgroundColor = '';
+            cell.getElement().innerHTML = '';
         })
         this.startCell = [-1,-1];
         this.endCell = [-1,-1];
@@ -188,6 +193,7 @@ class StateClass {
     protected mode: ModeType;       // mode defines what the user is currently doing
     protected cellArray: UnitCell2DArray;
     protected cellContainer: CellContainer;
+    protected speed = 0;
     
     constructor(cellArray: UnitCell2DArray,cellContainer:CellContainer) {
         this.mode = 0
@@ -253,6 +259,14 @@ class StateClass {
 
     getCellArray() {
         return this.cellArray;
+    }
+
+    setSpeed(speed : number) {
+        this.speed = speed;
+    }
+
+    getSpeed() {
+        return this.speed;
     }
 }
 
