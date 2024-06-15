@@ -1,4 +1,5 @@
 /* styles.css */
+/* Mobile first Design */
 * {
   margin: 0;
   padding: 0;
@@ -6,18 +7,98 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
-  background-color: gray;
+  overflow: hidden;
 }
 
-h1 {
-  color: #333;
-  text-align: center;
+main {
+  width: 100vw;
+  height: 140vh;
+  display: grid;
+  grid-template-rows: auto auto;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  /* height: 100%; */
+  border: 2px solid red;
 }
 
 #cell_container {
-  width: min(80vw,80vh);
-  height: min(80vw,80vh);
+  width: 75vh;
+  height: 75vh;
+}
+
+.toolbar {
+  border: 2px solid orange;
+  height: 25vh;
+  transition: height 250ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.toolbar:hover {
+  height: 50vh;
+}
+
+#notification {
+  position: absolute;
+  top: 0%;
+  right: 0%;
+  width: 20vw;
+  height: 10vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2vw;
+  margin: 1vw;
+
+  border: 1vw solid gold;
+  background-color: aqua;
+}
+
+.notification_hide {
+  transform: translateY(-150%);
+  transition: transform 1000ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+.notification_show {
+  transform: translateY(0%);
+}
+
+#critical {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 20vw;
+  height: 10vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2vw;
+  margin: 1vw;
+
+  border: 1vw solid orange;
+  background-color: skyblue;
+  transition: transform 100ms cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+/*  TODO !!! Add this class for few seconds */
+.critical_show {
+  transform: translateY(-150%);
+}
+
+@media only screen and (orientation: landscape) {
+  /* For wide screens: */
+  body {
+
+  }
+}
+
+body {
+  background-color: gray;
+}
+
+#cell_container {
   background-color: gray;
   display: flex;
   flex-wrap: wrap;
@@ -43,4 +124,46 @@ h1 {
 
 .unit_cell_end {
   background-color: red; 
+}
+
+
+/* 
+==== */
+
+input[type="range" i] {
+  --c: orange; /* active color */
+  --g: 4px; /* the gap */
+  --l: 2px; /* line thickness*/
+  --s: 10px; /* thumb size*/
+  
+  width: 100px;
+  height: var(--s); /* needed for Firefox*/
+  -webkit-appearance :none;
+  -moz-appearance :none;
+  appearance :none;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* chromium */
+input[type="range" i]::-webkit-slider-thumb{
+  height: var(--s);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow: 0 0 0 var(--l) inset var(--c);
+  border-image: linear-gradient(90deg,var(--c) 50%,#ababab 0) 0 1/calc(50% - var(--l)/2) 100vw/0 calc(100vw + var(--g));
+  -webkit-appearance: none;
+  appearance: none;
+}
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+  height: var(--s);
+  width: var(--s);
+  background: none;
+  border-radius: 50%;
+  box-shadow: 0 0 0 var(--l) inset var(--c);
+  border-image: linear-gradient(90deg,var(--c) 50%,#ababab 0) 0 1/calc(50% - var(--l)/2) 100vw/0 calc(100vw + var(--g));
+  -moz-appearance: none;
+  appearance: none;
 }
