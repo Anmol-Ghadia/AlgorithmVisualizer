@@ -1,5 +1,5 @@
 export {CellContainer,UnitCell,UnitCell2DArray,StateClass,coordinates, store2DArrayData};
-
+import { notify } from "./logging.js";
 // Contains latest information regarding container of all cells 
 class CellContainer {
     
@@ -90,7 +90,7 @@ class UnitCell2DArray {
         this.startCell = [-1,-1];
         this.endCell = [-1,-1];
         this.wallCell = [];
-        console.log('cleared board');
+        notify('cleared board');
     }
 
     // Gets a cell at given coordinate
@@ -150,14 +150,11 @@ class UnitCell2DArray {
             // Setwall
             this.wallCell.push(coord);
             this.getCell(coord).getElement().classList.add('unit_cell_wall');
-            console.log("Wall Array Size Increased:",this.wallCell.length);   
         } else {
             // remove from wall list
             this.wallCell.splice(wallIndex,1);
             this.getCell(coord).getElement().classList.remove('unit_cell_wall');
-            console.log("Wall Array Size Decreased:",this.wallCell.length);
         }
-        console.log(this.wallCell);
     }
 }
 
@@ -195,9 +192,9 @@ class StateClass {
     protected cellContainer: CellContainer;
     protected speed = 0;
     
-    constructor(cellArray: UnitCell2DArray,cellContainer:CellContainer) {
+    constructor(cellContainer:CellContainer) {
         this.mode = 0
-        this.cellArray = cellArray;
+        this.cellArray = new UnitCell2DArray();
         this.cellContainer = cellContainer;
     }
 
@@ -213,7 +210,6 @@ class StateClass {
         
         let deltaX = event.clientX - this.cellContainer.getX();
         let deltaY = event.clientY - this.cellContainer.getY();
-        console.log(deltaX,":",deltaY)
 
         let unit_width = this.cellArray.getCell([0,0]).getElement().getBoundingClientRect().width;
         let xCoord = Math.floor(deltaX / unit_width);
@@ -221,17 +217,16 @@ class StateClass {
 
         switch (this.mode) {
             case 0:
-                console.log("Start set at:",xCoord,yCoord); // TODO !!! add logging
+                notify("Start set");
                 this.cellArray.setStart([xCoord,yCoord]);
                 this.updateMode(1);    
                 break;
             case 1:
-                console.log("End set at:",xCoord,yCoord); // TODO !!! add logging
+                notify("End set");
                 this.cellArray.setEnd([xCoord,yCoord]);
                 this.updateMode(2);
                 break;
             case 2:
-                console.log("Wall toggled at:", xCoord,yCoord); // TODO !!! add logging
                 this.cellArray.setWall([xCoord,yCoord]);
                 break;
             case 3:

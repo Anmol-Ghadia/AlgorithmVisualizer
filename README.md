@@ -31,10 +31,10 @@
 ### Errors
 1) 100: Element with `id="cell_container"` is null during init
 1) 101: Element with `id="cell_count_slider"` is null during init
-1) 102: Element with `id="clear_board_button"` is null during init
-1) 103: Element with `id="BFS_button"` is null during init
-1) 104: Element with `id="simulation_speed_slider"` is null during init
-1) 105: Element with `id="DFS_button"` is null during init
-1) 106: Element with `id="randomCellSearchInit"` is null during init
-1) 107: Element with `id="randomCellSearchInit"` is null during init
-1) 108: Element with `id="simulation_toggle_button"` is null during init
+1) 102: Element with `id="random_maze_button"` is null during init
+1) 103: Element with `id="simulation_speed_slider"` is null during init
+1) 104: Element with `id="step_button"` is null during init
+1) 105: Element with `id="pause_button"` is null during init
+1) 106: Element with `id="start_button"` is null during init
+1) 107: Element with `id="clear_board_button"` is null during init
+1) 200: Error with Radio button for Algorithms

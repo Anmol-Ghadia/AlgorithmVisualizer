@@ -4,9 +4,11 @@ export {
     Stack,
     randomRemove,
     randomPushAll,
-    // generalSearchAlgorithm,
+    isSameCordinate,
     generalSearchClass
 }
+
+import { notify } from './logging.js';
 
 import {
     StateClass,
@@ -141,7 +143,7 @@ class randomPushAll extends Stack {
     let newArr = shuffleArray(arr);
     newArr.forEach(ele=>{
         super.push(ele);
-    })
+        })
     }
 }
 
@@ -230,7 +232,6 @@ class generalSearchClass {
     
 
     computeOnce() {
-        console.log("computed once");
         switch (this.mode) {
             case 0:
                 this.initialize();
@@ -256,10 +257,8 @@ class generalSearchClass {
             this.toDoDataStructure.push(this.state.getCellArray().getStart());
             this.distance.set(this.state.getCellArray().getStart(),0);
             this.mode = 1;
-            // !!! maybe notify user
         } else {
             this.mode = 0;
-            // !!! maybe notify user
         }
     }
 
@@ -275,8 +274,8 @@ class generalSearchClass {
         if (this.state.getCellArray().isEnd(currentCoordinate)) {
             // Found end
             this.distance.set(currentCoordinate,
-                getLeastNeighbourDistance(currentCoordinate,this.distance,this.boardSize)+1);
-            // console.log("found end! at:",currentCoordinate);
+                this.getLeastNeighbourDistance(currentCoordinate,this.distance,this.boardSize)+1);
+            notify('found end at: ['+currentCoordinate[0].toString()+','+currentCoordinate[1].toString()+']');
             this.endCell = currentCoordinate;
             this.mode = 2
             return; // Exploration over !!!
@@ -289,7 +288,7 @@ class generalSearchClass {
         }
 
         this.visited.set(currentCoordinate,true);
-        let currentDistance = getLeastNeighbourDistance(currentCoordinate,this.distance,this.boardSize)+1;
+        let currentDistance = this.getLeastNeighbourDistance(currentCoordinate,this.distance,this.boardSize)+1;
         this.distance.set(currentCoordinate,currentDistance);
         let color = "hsl(" + ((currentDistance%25)/25)*360 +",100%,50%)";
         this.state.getCellArray().getCell(currentCoordinate).getElement().style.backgroundColor = color;
@@ -331,42 +330,41 @@ class generalSearchClass {
 
         while (!isSameCordinate(this.shortestPath[this.shortestPath.length-1],this.state.getCellArray().getStart())) {
             let currentCoord = this.shortestPath[this.shortestPath.length-1];
-            // console.log("shortest Path cell:",currentCoord);
             this.state.getCellArray().getCell(currentCoord).getElement().innerHTML = this.distance.get(currentCoord).toString();
             this.state.getCellArray().getCell(currentCoord).getElement().style.backgroundColor = 'orange';
-            // console.log("distance: ",distance.get(currentCoord).toString());
-            this.shortestPath.push(getNeighbourWithLeastDistance(currentCoord,this.distance,this.boardSize));
+            this.shortestPath.push(this.getNeighbourWithLeastDistance(currentCoord,this.distance,this.boardSize));
         }
         this.mode = 3;
 
         this.state.getCellArray().getCell(this.shortestPath[this.shortestPath.length-1]).getElement().innerHTML
         = this.distance.get(this.shortestPath[this.shortestPath.length-1]).toString();
     }
+
+    private getLeastNeighbourDistance(currentCoordinate:coordinates,distance:store2DArrayData<number>,boardSize:number) {
+        return distance.get(this.getNeighbourWithLeastDistance(currentCoordinate,distance,boardSize));
+    }
+    
+    private getNeighbourWithLeastDistance(parentCoord:coordinates,distance:store2DArrayData<number>,boardSize:number) {
+        let neighbours:coordinates[] = [
+            [parentCoord[0],parentCoord[1]-1],  // North
+            [parentCoord[0]+1,parentCoord[1]],  // East
+            [parentCoord[0],parentCoord[1]+1],  // South
+            [parentCoord[0]-1,parentCoord[1]]]  // West
+        let minNeighbour = parentCoord;
+        for (let i = 0; i < neighbours.length; i++) {
+            let childCoord = neighbours[i];
+            if (childCoord[0]<0 || childCoord[1]<0 ||
+                childCoord[0]>=boardSize || childCoord[1]>=boardSize) {
+                continue;
+            }
+            if (distance.get(childCoord) < distance.get(minNeighbour)) {
+                minNeighbour = childCoord;
+            }
+        }
+        return minNeighbour;
+    }
 }
 
 function isSameCordinate(coord1:coordinates,coord2:coordinates) {
     return (coord1[0]==coord2[0] && coord1[1]==coord2[1]);
-}
-
-function getLeastNeighbourDistance(currentCoordinate:coordinates,distance:store2DArrayData<number>,boardSize:number) {
-    return distance.get(getNeighbourWithLeastDistance(currentCoordinate,distance,boardSize));
-}
-
-function getNeighbourWithLeastDistance(parentCoord:coordinates,distance:store2DArrayData<number>,boardSize:number) {
-    let neighbours:coordinates[] = [
-        [parentCoord[0],parentCoord[1]-1],  // North
-        [parentCoord[0]+1,parentCoord[1]],  // East
-        [parentCoord[0],parentCoord[1]+1],  // South
-        [parentCoord[0]-1,parentCoord[1]]]  // West
-    let minNeighbour = parentCoord;
-    for (let i = 0; i < neighbours.length; i++) {
-        let childCoord = neighbours[i];
-        if (childCoord[0]<0 || childCoord[1]<0 || childCoord[0]>=boardSize || childCoord[1]>=boardSize) {
-            continue;
-        }
-        if (distance.get(childCoord) < distance.get(minNeighbour)) {
-            minNeighbour = childCoord;
-        }
-    }
-    return minNeighbour;
 }
