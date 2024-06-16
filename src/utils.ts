@@ -322,7 +322,6 @@ class generalSearchClass {
                 break;
             case 3:
                 // OVER
-                // !!! maybe notify user
                 break;
             
         }
@@ -341,6 +340,7 @@ class generalSearchClass {
             this.toDoDataStructure.push(this.state.getCellArray().getStart());
             this.distance.set(this.state.getCellArray().getStart(),0);
             this.mode = 1;
+            this.state.updateMode(3);
         } else {
             this.mode = 0;
         }

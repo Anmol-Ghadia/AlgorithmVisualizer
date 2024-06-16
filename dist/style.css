@@ -203,12 +203,12 @@ label {
 }
 
 .notification_hide {
-  transform:  translateX(125%);
+  transform: scaleX(0%) scaleY(0%);
   transition: transform 1000ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .notification_show {
-  transform:  translateX(0%);
+  transform: scaleX(100%) scaleY(100%);
 }
 
 #critical {
@@ -229,12 +229,12 @@ label {
 }
 
 .critical_hide {
-  transform:  translateX(-125%);
+  transform: scaleX(0%) scaleY(0%);
   transition: transform 1000ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .critical_show {
-  transform: translateX(0%);
+  transform: scaleX(100%) scaleY(100%);
 }
 
 #cell_container {
@@ -328,29 +328,41 @@ label {
     height: 100vh;
     width: 100vw;
     display: flex;
+    overflow: hidden;
   }
 
   #cell_container {
-    width: 90vh;
-    height: 90vh;
+    width: 75vh;
+    height: 75vh;
   }
 
   .toolbar {
-    position: absolute;
-    right: 0%;
     height: 100vh;
     border: none;
     border-left: 1vw solid rgba(0,0,0,0.4);
     border-radius: 4vh 0 0 4vh;
     width: 30vw;
     padding-left: 5vh;
-    transform: translateX(90%);
     transition: transform 300ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
   }
 
-  .toolbar:hover {
-    transform: translateX(0%);
+  @media (hover: hover) {
+    #cell_container {
+      width: 90vh;
+      height: 90vh;
+    }
+
+    .toolbar {
+      position: absolute;
+      right: 0%;
+      transform: translateX(90%);
+    }
+
+    .toolbar:hover {
+      transform: translateX(0%);
+    }
   }
+
 
   .control_wrapper {
     height: 100%;
@@ -438,6 +450,16 @@ label {
     top: 0%;
     left: 0%;
   }
+
+  .notification_hide {
+    transform: scaleX(0%) scaleY(0%);
+    transition: transform 1000ms cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  
+  .notification_show {
+    transform: scaleX(100%) scaleY(100%);
+  }
+
   #critical {
     text-align: center;
     width: 15vw;
@@ -447,7 +469,20 @@ label {
     bottom: 0%;
   }
 
+  .critical_hide {
+    transform: scaleX(0%) scaleY(0%);
+    transition: transform 1000ms cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  
+  .critical_show {
+    transform: scaleX(100%) scaleY(100%);
+  }
+
   label {
     font-size: 3vh;
+  }
+
+  @media (hover: none) {
+
   }
 }
