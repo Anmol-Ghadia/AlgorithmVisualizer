@@ -18,7 +18,7 @@ function notify(msg:string) {
         div.innerHTML = msg;
         setTimeout(() => {
             div.classList.remove('notification_show');
-        }, 3000);
+        }, 1000);
     }
     console.log(msg);
 }

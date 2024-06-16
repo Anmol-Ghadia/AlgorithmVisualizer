@@ -3,8 +3,7 @@
 ### TODO
 1) Slider Styling
 1) Walls should not be allowed to set once the algorithm has begun
-1) notification and error signs should fly in from edge as user 
-   cannot select anything behind the sign even if `opacity=0`
+1) ~~notification and error signs should fly in from edge as user  cannot select anything behind the sign even if opacity=0~~
 1) ~~Polish styling~~
 1) ~~Add css~~
 1) ~~clear does not work when board is partially filled (ex. only start is set)~~
