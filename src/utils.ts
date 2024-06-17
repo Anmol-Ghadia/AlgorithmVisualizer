@@ -273,12 +273,13 @@ class generalSearchClass {
 
         if (this.state.getCellArray().isEnd(currentCoordinate)) {
             // Found end
-            this.distance.set(currentCoordinate,
-                this.getLeastNeighbourDistance(currentCoordinate,this.distance,this.boardSize)+1);
+            let currentDistance = this.getLeastNeighbourDistance(currentCoordinate,this.distance,this.boardSize)+1;
+            this.distance.set(currentCoordinate,currentDistance);
+            this.setCellStyling(currentCoordinate);
             notify('found end at: ['+currentCoordinate[0].toString()+','+currentCoordinate[1].toString()+']');
             this.endCell = currentCoordinate;
             this.mode = 2
-            return; // Exploration over !!!
+            return;
         }
 
         // Check if already visited
@@ -290,40 +291,26 @@ class generalSearchClass {
         this.visited.set(currentCoordinate,true);
         let currentDistance = this.getLeastNeighbourDistance(currentCoordinate,this.distance,this.boardSize)+1;
         this.distance.set(currentCoordinate,currentDistance);
-        let color = "hsl(" + ((currentDistance%25)/25)*360 +",100%,50%)";
-        this.state.getCellArray().getCell(currentCoordinate).getElement().style.backgroundColor = color;
-        this.state.getCellArray().getCell(currentCoordinate).getElement().innerHTML = currentDistance.toString();
+        this.setCellStyling(currentCoordinate);
 
         if (this.getNeighboursWithMoreThanOnePlusDistance(currentCoordinate).length != 0) {
             this.updateVisitedDistances(currentCoordinate);
         }
 
-        let potentialNeighbours:coordinates[] = [
-            [currentCoordinate[0],currentCoordinate[1]-1],  // North
-            [currentCoordinate[0]+1,currentCoordinate[1]],  // East
-            [currentCoordinate[0],currentCoordinate[1]+1],  // South
-            [currentCoordinate[0]-1,currentCoordinate[1]]]  // West
         let neighbours:coordinates []= [];
-        for (let i = 0; i < potentialNeighbours.length; i++) {
-            let coord = potentialNeighbours[i];
-            // Check if the coordinates are outside the board
-            if (coord[0]<0 || coord[1]<0 || 
-                coord[0]>=this.boardSize || coord[1]>=this.boardSize) {
-                continue;
-            }
-
+        this.getValidNeighbors(currentCoordinate).forEach(coord=>{
             // Check if visited
             if (this.visited.get(coord)) {
-                continue;
+                return;
             }
 
             // check if the coordinates containe a wall cell
             if (this.state.getCellArray().isWall(coord) != -1) {
-                continue;
+                return;
             }
 
             neighbours.push([coord[0],coord[1]]);
-        }
+        });
         this.toDoDataStructure.pushAll(neighbours);
     }
 
@@ -334,8 +321,7 @@ class generalSearchClass {
 
         while (!isSameCordinate(this.shortestPath[this.shortestPath.length-1],this.state.getCellArray().getStart())) {
             let currentCoord = this.shortestPath[this.shortestPath.length-1];
-            this.state.getCellArray().getCell(currentCoord).getElement().innerHTML = this.distance.get(currentCoord).toString();
-            this.state.getCellArray().getCell(currentCoord).getElement().style.backgroundColor = 'orange';
+            this.setPathStyling(currentCoord);
             this.shortestPath.push(this.getNeighbourWithLeastDistance(currentCoord,this.distance));
         }
         this.mode = 3;
@@ -349,22 +335,15 @@ class generalSearchClass {
     }
     
     private getNeighbourWithLeastDistance(parentCoord:coordinates,distance:store2DArrayData<number>) {
-        let neighbours:coordinates[] = [
-            [parentCoord[0],parentCoord[1]-1],  // North
-            [parentCoord[0]+1,parentCoord[1]],  // East
-            [parentCoord[0],parentCoord[1]+1],  // South
-            [parentCoord[0]-1,parentCoord[1]]]  // West
+        
         let minNeighbour = parentCoord;
-        for (let i = 0; i < neighbours.length; i++) {
-            let childCoord = neighbours[i];
-            if (childCoord[0]<0 || childCoord[1]<0 ||
-                childCoord[0]>=this.boardSize || childCoord[1]>=this.boardSize) {
-                continue;
-            }
+
+        this.getValidNeighbors(parentCoord).forEach( childCoord => {
             if (distance.get(childCoord) < distance.get(minNeighbour)) {
                 minNeighbour = childCoord;
             }
-        }
+        });
+
         return minNeighbour;
     }
 
@@ -378,9 +357,7 @@ class generalSearchClass {
             
             let currentDistance = this.getLeastNeighbourDistance(currentCoordinate,this.distance,this.boardSize)+1;
             this.distance.set(currentCoordinate,currentDistance);
-            let color = "hsl(" + ((currentDistance%25)/25)*360 +",20%,50%)";
-            this.state.getCellArray().getCell(currentCoordinate).getElement().style.backgroundColor = color;
-            this.state.getCellArray().getCell(currentCoordinate).getElement().innerHTML = currentDistance.toString();
+            this.setCellStyling(currentCoordinate);
             
             todo.pushAll(this.getNeighboursWithMoreThanOnePlusDistance(currentCoordinate));
             
@@ -388,31 +365,80 @@ class generalSearchClass {
     }
 
     private getNeighboursWithMoreThanOnePlusDistance(parentCoord :coordinates) {
+        let outNeighbours:coordinates[] = [];
+        this.getValidNeighbors(parentCoord).forEach(neighbour => {
+            if (!this.visited.get(neighbour)) {
+                return;
+            }
+            if (this.distance.get(neighbour) > (1 + this.distance.get(parentCoord))) {
+                outNeighbours.push(neighbour);
+            }
+        });
+        return outNeighbours;
+    }
+
+
+    // Sets the cell's styling as a path cell 
+    //  Ignores, start and end cells
+    private setPathStyling(coord:coordinates) {
+        // Skip if start cell
+        if (isSameCordinate(this.state.getCellArray().getStart(),coord)) {
+            return;
+        }
+        //Skip if end cell
+        if (isSameCordinate(this.state.getCellArray().getEnd(),coord)) {
+            return;
+        }
+        
+        let element = this.state.getCellArray().getCell(coord).getElement();
+        element.style.backgroundColor = 'orange';
+        
+    }
+
+    // Sets the cell's styling as a explored cell
+    //  Ignores, start and end cells
+    private setCellStyling(coord:coordinates) {
+        let element = this.state.getCellArray().getCell(coord).getElement();
+        let currentDistance = this.distance.get(coord); 
+        // Skip if start cell
+        if (isSameCordinate(this.state.getCellArray().getStart(),coord)) {
+            element.innerHTML = currentDistance.toString();
+            return;
+        }
+        //Skip if end cell
+        if (isSameCordinate(this.state.getCellArray().getEnd(),coord)) {
+            element.innerHTML = currentDistance.toString();
+            return;
+        }
+
+        let color = "hsl(" + ((currentDistance%25)/25)*360 +",75%,65%)";
+        element.style.backgroundColor = color;
+        element.innerHTML = currentDistance.toString();
+        element.title += '\nDistance: ' + currentDistance.toString();
+
+    }
+
+    // Returns a list of valid neigbor coordinates
+    private getValidNeighbors(parentCoord:coordinates) {
         let neighbours:coordinates[] = [
             [parentCoord[0],parentCoord[1]-1],  // North
             [parentCoord[0]+1,parentCoord[1]],  // East
             [parentCoord[0],parentCoord[1]+1],  // South
-            [parentCoord[0]-1,parentCoord[1]]]  // West
+            [parentCoord[0]-1,parentCoord[1]]   // West
+        ]
         let outNeighbours:coordinates[] = [];
         neighbours.forEach(neighbour => {
             if (neighbour[0]<0 || neighbour[1]<0 ||
                 neighbour[0]>=this.boardSize || neighbour[1]>=this.boardSize) {
                 return;
             }
-            if (!this.visited.get(neighbour)) {
-                return;
-            }
-            if (this.distance.get(neighbour) > (1 + this.distance.get(parentCoord))) {
-                outNeighbours.push(neighbour);
-                // !!! TEMP TODO
-                this.state.getCellArray().getCell(neighbour).getElement().style.backgroundColor = "rgba(200,200,200,0.5)";
-                console.log("Added cell to queue for distance update:",neighbour);
-            }
+            outNeighbours.push(neighbour);
         });
         return outNeighbours;
     }
 }
 
+// Returns true if both coordinates are the same
 function isSameCordinate(coord1:coordinates,coord2:coordinates) {
     return (coord1[0]==coord2[0] && coord1[1]==coord2[1]);
 }

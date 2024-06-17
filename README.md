@@ -7,6 +7,9 @@
 1) Add User notification for errors
 1) Add css
 1) Polish styling
+1) clear does not work when board is partiall filled (ex. only start is set)
+1) Reduce max number of cells that can be added
+1) Scale up to allow faster simulation speeds
 1) ~~Add a stop feature for the pause/continue algorithm~~
 1) ~~Clearing the board during search algorithm is running should be handled properly~~
 1) ~~Define a faster data structure for 2d storage of coordinates~~
