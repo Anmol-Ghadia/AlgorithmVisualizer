@@ -268,37 +268,37 @@ class generalSearchClass {
             this.mode = 3;
             return;
         }
-        let currentCoordinate = this.toDoDataStructure.remove();;
+        let currentCoord = this.toDoDataStructure.remove();;
         
 
-        if (this.state.getCellArray().isEnd(currentCoordinate)) {
+        if (this.state.getCellArray().isEnd(currentCoord)) {
             // Found end
-            let currentDistance = this.getLeastNeighbourDistance(currentCoordinate,this.distance,this.boardSize)+1;
-            this.distance.set(currentCoordinate,currentDistance);
-            this.setCellStyling(currentCoordinate);
-            notify('found end at: ['+currentCoordinate[0].toString()+','+currentCoordinate[1].toString()+']');
-            this.endCell = currentCoordinate;
+            let currentDistance = this.computeCurrentDistance(currentCoord);
+            this.distance.set(currentCoord,currentDistance);
+            this.setCellStyling(currentCoord);
+            notify('found end at: ['+currentCoord[0].toString()+','+currentCoord[1].toString()+']');
+            this.endCell = currentCoord;
             this.mode = 2
             return;
         }
 
         // Check if already visited
-        if (this.visited.get(currentCoordinate)) {
+        if (this.visited.get(currentCoord)) {
             this.computeOnce();
             return;
         }
 
-        this.visited.set(currentCoordinate,true);
-        let currentDistance = this.getLeastNeighbourDistance(currentCoordinate,this.distance,this.boardSize)+1;
-        this.distance.set(currentCoordinate,currentDistance);
-        this.setCellStyling(currentCoordinate);
+        this.visited.set(currentCoord,true);
+        let currentDistance = this.computeCurrentDistance(currentCoord);
+        this.distance.set(currentCoord,currentDistance);
+        this.setCellStyling(currentCoord);
 
-        if (this.getNeighboursWithMoreThanOnePlusDistance(currentCoordinate).length != 0) {
-            this.updateVisitedDistances(currentCoordinate);
+        if (this.neighborsNeedingUpdate(currentCoord).length != 0) {
+            this.updateVisitedDistances(currentCoord);
         }
 
         let neighbours:coordinates []= [];
-        this.getValidNeighbors(currentCoordinate).forEach(coord=>{
+        this.getValidNeighbors(currentCoord).forEach(coord=>{
             // Check if visited
             if (this.visited.get(coord)) {
                 return;
@@ -322,7 +322,7 @@ class generalSearchClass {
         while (!isSameCordinate(this.shortestPath[this.shortestPath.length-1],this.state.getCellArray().getStart())) {
             let currentCoord = this.shortestPath[this.shortestPath.length-1];
             this.setPathStyling(currentCoord);
-            this.shortestPath.push(this.getNeighbourWithLeastDistance(currentCoord,this.distance));
+            this.shortestPath.push(this.leastDistanceNeighbor(currentCoord));
         }
         this.mode = 3;
 
@@ -330,16 +330,20 @@ class generalSearchClass {
         = this.distance.get(this.shortestPath[this.shortestPath.length-1]).toString();
     }
 
-    private getLeastNeighbourDistance(currentCoordinate:coordinates,distance:store2DArrayData<number>,boardSize:number) {
-        return distance.get(this.getNeighbourWithLeastDistance(currentCoordinate,distance));
+    // Returns the distance of current cell as computed by
+    //   min(neighbour distances) + 1
+    private computeCurrentDistance(currentCoordinate:coordinates) {
+        let leastDistanceNeigbor = this.leastDistanceNeighbor(currentCoordinate);
+        return this.distance.get(leastDistanceNeigbor)+1;
     }
     
-    private getNeighbourWithLeastDistance(parentCoord:coordinates,distance:store2DArrayData<number>) {
+    // Retuns the neighbor whose distance value is least
+    private leastDistanceNeighbor(parentCoord:coordinates) {
         
         let minNeighbour = parentCoord;
 
         this.getValidNeighbors(parentCoord).forEach( childCoord => {
-            if (distance.get(childCoord) < distance.get(minNeighbour)) {
+            if (this.distance.get(childCoord) < this.distance.get(minNeighbour)) {
                 minNeighbour = childCoord;
             }
         });
@@ -355,16 +359,18 @@ class generalSearchClass {
         while (todo.length != 0) {
             let currentCoordinate = todo.remove();
             
-            let currentDistance = this.getLeastNeighbourDistance(currentCoordinate,this.distance,this.boardSize)+1;
+            let currentDistance = this.computeCurrentDistance(currentCoordinate);
             this.distance.set(currentCoordinate,currentDistance);
             this.setCellStyling(currentCoordinate);
             
-            todo.pushAll(this.getNeighboursWithMoreThanOnePlusDistance(currentCoordinate));
+            todo.pushAll(this.neighborsNeedingUpdate(currentCoordinate));
             
         }
     }
 
-    private getNeighboursWithMoreThanOnePlusDistance(parentCoord :coordinates) {
+    // Returns the neighbors whose distances need to be updated as they are more than
+    //   plus one of current distance
+    private neighborsNeedingUpdate(parentCoord :coordinates) {
         let outNeighbours:coordinates[] = [];
         this.getValidNeighbors(parentCoord).forEach(neighbour => {
             if (!this.visited.get(neighbour)) {
