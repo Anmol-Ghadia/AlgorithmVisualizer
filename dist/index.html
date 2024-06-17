@@ -12,47 +12,54 @@
       <div id="cell_container"></div>
     </div>
     <div class="toolbar">
-      <label for="number_of_cells"> Num of cells
-        <input type="range" name="number_of_cells" id="cell_count_slider"
-          min="5" max="75" step="1" value="25">
-      </label>
-      <br>
-      <label for="simulation_speed"> Simulation Speed
-        <input type="range" name="simulation_speed" id="simulation_speed_slider"
-          min="0" max="10" step="1" value="0">
-      </label>
-      <br>
-
-      <!-- radio buttons -->
-      <label for="bfs_radio">BFS
-        <input type="radio" id="bfs_radio" name="algorithm_radio" value="BFS" checked>
-      </label>
-      <label for="dfs_radio">DFS
-        <input type="radio" id="dfs_radio" name="algorithm_radio" value="DFS">
-      </label>
-      <label for="random_cell_radio">Random Cell
-        <input type="radio" id="random_cell_radio" name="algorithm_radio" value="randCell">
-      </label>
-      <label for="random_path_radio">Random Path
-        <input type="radio" id="random_path_radio" name="algorithm_radio" value="randPath">
-      </label>
-
-      <br>
-      <button type="button" id="random_maze_button">Generate Maze</button>
-      <button type="button" id="clear_board_button">clear</button>
-      <br>
-
-      <!-- Start button changes name to stop -->
-      <button type="button" id="start_button">Start</button>
-      <button type="button" id="pause_button" disabled>Pause</button>
-      <button type="button" id="step_button">Step</button>
+      <div class="control_wrapper">
+        <div class="first_row">
+          <label for="number_of_cells"> Num of cells
+            <input type="range" name="number_of_cells" id="cell_count_slider"
+              min="5" max="75" step="1" value="25">
+          </label>
+          <div class="first_row_button_container">
+            <button type="button" id="random_maze_button">Generate Maze</button>
+            <button type="button" id="clear_board_button">clear</button>
+          </div>
+          <label for="simulation_speed"> Simulation Speed
+            <input type="range" name="simulation_speed" id="simulation_speed_slider"
+              min="0" max="10" step="1" value="0">
+          </label>            
+        </div>
+        <div class="second_row">
+          <label for="bfs_radio">BFS
+            <input type="radio" id="bfs_radio" name="algorithm_radio" value="BFS" checked>
+            <span class="checkmark">BFS</span>
+          </label>
+          <label for="dfs_radio">DFS
+            <input type="radio" id="dfs_radio" name="algorithm_radio" value="DFS">
+            <span class="checkmark">DFS</span>
+          </label>
+          <label for="random_cell_radio">Random Cell
+            <input type="radio" id="random_cell_radio" name="algorithm_radio" value="randCell">
+            <span class="checkmark">Random Cell</span>
+          </label>
+          <label for="random_path_radio">Random Path
+            <input type="radio" id="random_path_radio" name="algorithm_radio" value="randPath">
+            <span class="checkmark">Random Path</span>
+          </label>
+        </div>
+        <div class="third_row">
+          <div class="third_row_button_container">
+            <button type="button" id="start_button">Start</button>
+            <button type="button" id="pause_button" disabled>Pause</button>
+            <button type="button" id="step_button">Step</button>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
   <br>
+  <nav>
     <div>Notification:</div><div id="notification" class="notification_hide">hello</div>
-    
-    <br>
     <div>Critical:</div><div id="critical">hello</div>
+  </nav>
 </body>
 <script src="./scripts/main.js" type="module"></script>
 </html>

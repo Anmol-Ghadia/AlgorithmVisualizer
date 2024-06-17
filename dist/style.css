@@ -27,18 +27,127 @@ main {
 }
 
 #cell_container {
-  width: 75vh;
-  height: 75vh;
+  width: 85vw;
+  height: 85vw;
 }
 
 .toolbar {
   border: 2px solid orange;
-  height: 25vh;
+  height: 50vh;
+  /* height: 25vh; */
   transition: height 250ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .toolbar:hover {
   height: 50vh;
+}
+
+.control_wrapper {
+  padding-top: 1vh;
+  height: 16vh;
+  border: 2px solid green;
+  display: grid;
+  grid-template-rows: repeat(3,5vh);
+}
+
+.control_wrapper button {
+  background-color: aqua;
+  border: none;
+  height: 4vh;
+}
+
+.first_row {
+  border: 2px solid yellow;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.first_row_button_container button {
+  width: 15vh;
+}
+
+#random_maze_button {
+  border-top-left-radius: 2.5vh;
+  border-bottom-left-radius: 2.5vh;
+}
+
+#clear_board_button {
+  border-top-right-radius: 2.5vh;
+  border-bottom-right-radius: 2.5vh;
+}
+/* Todo !!! */
+.second_row {
+  /* display: grid;
+  grid-template-columns: repeat(4,auto);
+  grid-template-rows: auto; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.second_row label {
+  visibility: hidden;
+  padding: 0vh 8vw;
+  /* border: 2px solid red; */
+  width: 15vw;
+  height: 4vw;
+  background-color: orchid;
+  position: relative;
+}
+
+.second_row input {
+  visibility: hidden;
+  width: 0px;
+  height: 0px;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0px;
+  visibility: visible;
+  left: 0px;
+  height: 6vw;
+  width: 15vw;
+  background-color: blue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#bfs_radio ~ .checkmark {
+  border-radius: 2vh 0vh 0vh 2vh;
+}
+
+#random_path_radio ~ .checkmark {
+  border-radius: 0vh 2vh 2vh 0vh;
+}
+
+.second_row label:hover input ~ .checkmark {
+  background-color: brown;
+}
+
+.second_row input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+.third_row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.third_row_button_container button {
+  width: 15vh;
+}
+
+#start_button {
+  border-top-left-radius: 2.5vh;
+  border-bottom-left-radius: 2.5vh;
+}
+#step_button {
+  border-top-right-radius: 2.5vh;
+  border-bottom-right-radius: 2.5vh;
 }
 
 #notification {
