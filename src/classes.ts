@@ -63,6 +63,12 @@ class UnitCell2DArray {
         return Math.floor(Math.pow(this.array.length,1/2));
     }
 
+    applyEndStyle() {
+        this.array.forEach(element => {
+            element.getElement().classList.add('unit_cell_no_elevation');
+        });
+    }
+
     // removes all references to all cells and resets fields
     clearAll() {
         for (let i = 0; i < this.array.length; i++) {
@@ -190,7 +196,7 @@ class StateClass {
     protected mode: ModeType;       // mode defines what the user is currently doing
     protected cellArray: UnitCell2DArray;
     protected cellContainer: CellContainer;
-    protected speed = 0;
+    protected speed = 10*25;
     
     constructor(cellContainer:CellContainer) {
         this.mode = 0

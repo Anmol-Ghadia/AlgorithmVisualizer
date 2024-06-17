@@ -4,6 +4,7 @@ export {fatalError,notify};
 function fatalError(msg:string) {
     let div = document.getElementById('critical') as HTMLDivElement;
     if (div != null) {
+        div.classList.add('critical_show');
         div.innerHTML = msg;
     }
     console.log(msg);
@@ -17,7 +18,7 @@ function notify(msg:string) {
         div.innerHTML = msg;
         setTimeout(() => {
             div.classList.remove('notification_show');
-        }, 1000);
+        }, 3000);
     }
     console.log(msg);
 }

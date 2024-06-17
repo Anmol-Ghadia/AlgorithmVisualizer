@@ -13,37 +13,15 @@
     </div>
     <div class="toolbar">
       <div class="control_wrapper">
-        <div class="first_row">
-          <label for="number_of_cells"> Num of cells
-            <input type="range" name="number_of_cells" id="cell_count_slider"
-              min="5" max="75" step="1" value="25">
-          </label>
-          <div class="first_row_button_container">
-            <button type="button" id="random_maze_button">Generate Maze</button>
-            <button type="button" id="clear_board_button">clear</button>
-          </div>
-          <label for="simulation_speed"> Simulation Speed
-            <input type="range" name="simulation_speed" id="simulation_speed_slider"
-              min="0" max="10" step="1" value="0">
-          </label>            
+        <div class="forth_row">
+          <button type="button" id="random_maze_button">Generate Maze</button>
+          <button type="button" id="clear_board_button">clear</button>
         </div>
         <div class="second_row">
-          <label for="bfs_radio">BFS
-            <input type="radio" id="bfs_radio" name="algorithm_radio" value="BFS" checked>
-            <span class="checkmark">BFS</span>
-          </label>
-          <label for="dfs_radio">DFS
-            <input type="radio" id="dfs_radio" name="algorithm_radio" value="DFS">
-            <span class="checkmark">DFS</span>
-          </label>
-          <label for="random_cell_radio">Dijkstra’s
-            <input type="radio" id="random_cell_radio" name="algorithm_radio" value="randCell">
-            <span class="checkmark">Dijkstra’s</span>
-          </label>
-          <label for="random_path_radio">Random Path
-            <input type="radio" id="random_path_radio" name="algorithm_radio" value="randPath">
-            <span class="checkmark">A* Algorithm</span>
-          </label>
+          <div id="bfs_radio" class="radio_button">Breadth First Search</div>
+          <div id="dfs_radio" class="radio_button">Depth First Search</div>
+          <div id="dijkstra_radio" class="radio_button">Random Explore</div>
+          <div id="a_star_radio" class="radio_button">A*</div>
         </div>
         <div class="third_row">
           <div class="third_row_button_container">
@@ -52,13 +30,22 @@
             <button type="button" id="step_button">Step</button>
           </div>
         </div>
+        <div class="first_row">
+          <label for="number_of_cells"> Num of cells
+            <input type="range" name="number_of_cells" id="cell_count_slider"
+              min="6" max="30" step="1" value="10">
+          </label>
+          <label for="simulation_speed"> Simulation Speed
+            <input type="range" name="simulation_speed" id="simulation_speed_slider"
+              min="0" max="10" step="1" value="0">
+          </label>            
+        </div>
       </div>
     </div>
   </main>
-  <br>
   <nav>
-    <div>Notification:</div><div id="notification" class="notification_hide">hello</div>
-    <div>Critical:</div><div id="critical">hello</div>
+    <div></div><div id="notification" class="notification_hide">hello</div>
+    <div></div><div id="critical" class="critical_hide">hello</div>
   </nav>
 </body>
 <script src="./scripts/main.js" type="module"></script>

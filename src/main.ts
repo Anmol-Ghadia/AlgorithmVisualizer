@@ -24,11 +24,12 @@ let STATE: StateClass;
 let CELL_CONTAINER: CellContainer;
 let SLIDER: HTMLInputElement;
 let SEARCH: generalSearchClass;
-let ALGORITHMRADIOS: NodeListOf<HTMLInputElement>;
+let ALGORITHMRADIOS: HTMLDivElement[];
 let PAUSEBUTTON:HTMLButtonElement;
 let STARTBUTTON:HTMLButtonElement;
 let STEPBUTTON:HTMLButtonElement;
 let CLEARBUTTON:HTMLButtonElement;
+let CURRENTRADIO: 0 | 1 | 2 | 3;
 
 addEventListener('DOMContentLoaded',init);
 addEventListener('click',()=>{console.log("click!")});
@@ -38,13 +39,16 @@ function init() {
     
     if (!setCellContinerGlobals()) return;
     if (!setCellCountSlider()) return;
-    if (!randomMazeInit()) return;
-    if (!setSpeedSlider()) return;
     if (!initSimulationButtons()) return;
 
     STATE = new StateClass(CELL_CONTAINER);
     makeAndPopulateCells(parseInt(SLIDER.value));
+
+    if (!randomMazeInit()) return;
+    if (!setSpeedSlider()) return;
+
     addEventListenersOnSimulationButtons();
+    addEventListenersOnRadioButtons();
 }
 
 // Returns false if failed, otherwise sets global(s) for container
@@ -114,20 +118,10 @@ function setSpeedSlider() {
         return false
     }
     slider.addEventListener('input',()=>{
-        STATE.setSpeed(parseInt(slider.value)*100);
+        let val = 10 - parseInt(slider.value);
+        STATE.setSpeed(val*25);
     });
     return true;
-}
-
-function getAlgorithm() : String {
-    let algorithm:String='';
-    for (const radio of ALGORITHMRADIOS) {
-        if (radio.checked) {
-            algorithm = radio.value;
-            break;
-        }
-    }
-    return algorithm;
 }
 
 // returns true if all simulation buttons are initialized
@@ -135,8 +129,11 @@ function initSimulationButtons():boolean {
     PAUSEBUTTON = document.getElementById('pause_button') as HTMLButtonElement;
     STARTBUTTON = document.getElementById('start_button') as HTMLButtonElement;
     STEPBUTTON = document.getElementById('step_button') as HTMLButtonElement;
-    ALGORITHMRADIOS = document.getElementsByName("algorithm_radio") as NodeListOf<HTMLInputElement>;
     CLEARBUTTON = document.getElementById('clear_board_button') as HTMLButtonElement;
+    let bfs = document.getElementById('bfs_radio') as HTMLDivElement;
+    let dfs = document.getElementById('dfs_radio') as HTMLDivElement;
+    let dij = document.getElementById('dijkstra_radio') as HTMLDivElement;
+    let aStar = document.getElementById('a_star_radio') as HTMLDivElement;
 
     if (STEPBUTTON == null) {
         fatalError('ERROR: 104');
@@ -154,8 +151,54 @@ function initSimulationButtons():boolean {
         fatalError('ERROR: 107');
         return false;
     }
+    if (bfs == null) {
+        fatalError('ERROR: 108')
+        return false;
+    }
+    if (dfs == null) {
+        fatalError('ERROR: 109')
+        return false;
+    }
+    if (dij == null) {
+        fatalError('ERROR: 110')
+        return false;
+    }
+    if (aStar == null) {
+        fatalError('ERROR: 111')
+        return false;
+    }
+    ALGORITHMRADIOS = [bfs,dfs,dij,aStar]
+    selectRadio(0);
 
     return true;
+}
+
+// Adds Event listeners on Radio buttons
+function addEventListenersOnRadioButtons() {
+    for (let index = 0; index < ALGORITHMRADIOS.length; index++) {
+        const element = ALGORITHMRADIOS[index];
+        element.addEventListener('click',()=>{
+            selectRadio(index);
+        })
+    }
+}
+
+function selectRadio(i: number) {
+    resetRadios();
+    ALGORITHMRADIOS[i].classList.add('radio_selected');
+    if (i != 0 && i != 1 && i != 2 && i != 3) {
+        fatalError('ERROR: 201');
+    } else {
+        CURRENTRADIO = i;
+    }
+}
+
+// Resets the styling of radio buttons
+function resetRadios() {
+    for (let index = 0; index < ALGORITHMRADIOS.length; index++) {
+        const element = ALGORITHMRADIOS[index];
+        element.classList.remove('radio_selected');
+    }
 }
 
 // Adds logic for Simulation buttons
@@ -175,17 +218,17 @@ function addEventListenersOnSimulationButtons() {
     STARTBUTTON.addEventListener('click', () => {
         if (STATE.getCellArray().isStartEndSet()){
             // Ready
-            switch (getAlgorithm()) {
-                case 'BFS':
+            switch (CURRENTRADIO) {
+                case 0:
                     SEARCH = new generalSearchClass(STATE,new Queue());
                     break;
-                case 'DFS':
+                case 1:
                     SEARCH = new generalSearchClass(STATE,new Stack());
                     break;
-                case 'randCell':
+                case 2:
                     SEARCH = new generalSearchClass(STATE,new randomRemove());
                     break;
-                case 'randPath':
+                case 3:
                     let start = STATE.getCellArray().getStart();
                     let end = STATE.getCellArray().getEnd();
                     SEARCH = new generalSearchClass(STATE,new randomPushAll(start,end));

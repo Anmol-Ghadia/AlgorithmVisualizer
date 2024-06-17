@@ -146,17 +146,6 @@ class randomRemove extends Queue {
     }
 }
 
-// // same as Stack but when adding neighbours,
-// //     they are added in a random order 
-// class randomPushAll extends Stack {
-//     pushAll(arr: coordinates[]): void {
-//     let newArr = shuffleArray(arr);
-//     newArr.forEach(ele=>{
-//         super.push(ele);
-//         })
-//     }
-// }
-
 class randomPushAll implements DataStructure {
     // Basic
     protected arr: coordinates[];
@@ -268,7 +257,6 @@ class generalSearchClass {
     // Supplied by user
     protected toDoDataStructure: DataStructure;
     
-
     // Extras    
     private endCell: coordinates = [-1,-1];
     private visited: store2DArrayData<boolean>;
@@ -361,6 +349,7 @@ class generalSearchClass {
     // REQUIRES mode==1
     private exploreOnce() {
         if (this.toDoDataStructure.length == 0 ) {
+            this.setEndStyle();
             this.mode = 3;
             return;
         }
@@ -420,10 +409,18 @@ class generalSearchClass {
             this.setPathStyling(currentCoord);
             this.shortestPath.push(this.leastDistanceNeighbor(currentCoord));
         }
+        let start = this.shortestPath[this.shortestPath.length-1];
+        this.setPathStyling(start);
         this.mode = 3;
+        setTimeout(() => {
+            this.setEndStyle();
+        }, 1000);
 
-        this.state.getCellArray().getCell(this.shortestPath[this.shortestPath.length-1]).getElement().innerHTML
-        = this.distance.get(this.shortestPath[this.shortestPath.length-1]).toString();
+        this.state.getCellArray().getCell(start).getElement().innerHTML = this.distance.get(start).toString();
+    }
+
+    private setEndStyle() {
+        this.state.getCellArray().applyEndStyle()
     }
 
     // Returns the distance of current cell as computed by
@@ -493,6 +490,7 @@ class generalSearchClass {
         }
         
         let element = this.state.getCellArray().getCell(coord).getElement();
+        element.classList.add('unit_cell_path');
         element.style.backgroundColor = 'orange';
         
     }
@@ -514,6 +512,7 @@ class generalSearchClass {
         }
 
         let color = "hsl(" + ((currentDistance%25)/25)*360 +",75%,65%)";
+        element.classList.add('unit_cell_explored');
         element.style.backgroundColor = color;
         element.innerHTML = currentDistance.toString();
         element.title += '\nDistance: ' + currentDistance.toString();
