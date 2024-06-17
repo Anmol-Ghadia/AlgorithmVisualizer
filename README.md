@@ -1,11 +1,12 @@
 # AlgorithmVisualizer
 
 ### TODO
-1) Add css
 1) Polish styling
-1) clear does not work when board is partially filled (ex. only start is set)
-1) Reduce max number of cells that can be added
-1) Reset Title of cells when board is cleared
+1) Slider Styling
+1) ~~Add css~~
+1) ~~clear does not work when board is partially filled (ex. only start is set)~~
+1) ~~Reduce max number of cells that can be added~~
+1) ~~Reset Title of cells when board is cleared~~
 1) ~~Configure Parameters for the cell container~~
 1) ~~Make General search algorithm efficient wherever possible~~
 1) ~~add support for different channels of logging~~

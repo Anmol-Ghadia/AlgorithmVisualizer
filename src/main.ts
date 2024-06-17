@@ -72,10 +72,7 @@ function setCellCountSlider() {
         fatalError('ERROR: 101');
         return false
     }
-    SLIDER.addEventListener('input',()=>{
-        STATE.reset();
-        makeAndPopulateCells(parseInt(SLIDER.value));
-    });
+    SLIDER.addEventListener('input',resetBoard);
     return true;
 }
 
@@ -247,17 +244,19 @@ function addEventListenersOnSimulationButtons() {
         }
     })
 
-    CLEARBUTTON.addEventListener('click', () => {
-        SEARCH.pause();
-        SEARCH = new generalSearchClass(STATE,new Queue());
-        STARTBUTTON.disabled = false;
-        STEPBUTTON.disabled = false;
-        PAUSEBUTTON.disabled = true;
-        setTimeout(() => {
-            STATE.clearBoard();
-        }, STATE.getSpeed());
-    })
+    CLEARBUTTON.addEventListener('click', resetBoard)
+}
 
+function resetBoard() {
+    if (SEARCH != null) SEARCH.pause();
+    SEARCH = new generalSearchClass(STATE,new Queue());
+    STARTBUTTON.disabled = false;
+    STEPBUTTON.disabled = false;
+    PAUSEBUTTON.disabled = true;
+    setTimeout(() => {
+        STATE.reset();
+        makeAndPopulateCells(parseInt(SLIDER.value))
+    }, STATE.getSpeed());
 }
 
 // Populates the cells according to the number of cells in one direction

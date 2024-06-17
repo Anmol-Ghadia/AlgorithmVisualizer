@@ -17,9 +17,9 @@ body {
 
 main {
   width: 100vw;
-  height: 120vh;
+  height: 130vh;
   display: grid;
-  grid-template-rows: 90vh 30vh;
+  grid-template-rows: 90vh 40vh;
   margin: 0px;
 }
 
@@ -38,16 +38,16 @@ main {
 
 .toolbar {
   padding-top: 1vh;
-  height: 30vh;
+  height: 40vh;
   background-color: rgba(0,0,0,0.3);
   border-radius: 4vw 4vw 0 0;
-  border-top: 1vw solid rgba(0,0,0,0.4);
+  border-top: 2vw solid rgba(0,0,0,0.4);
 }
 
 .control_wrapper {
   margin: 1vw;
   display: grid;
-  grid-template-rows: repeat(4,6vh);
+  grid-template-rows: repeat(4,8vh);
 }
 
 button {
@@ -58,9 +58,15 @@ button {
   border-right: 5px solid rgba(0,0,0,0.4);
 
   color: white;
-  height: 4vw;
+  height: 7vh;
 
-  font-size: 3vw;
+  font-size: 2vh;
+  user-select: none;
+}
+
+button:disabled {
+  color: #aaa;
+  border: none;
 }
 
 button:hover {
@@ -69,31 +75,44 @@ button:hover {
 }
 
 .radio_button {
-  background-color: aqua;
-  height: 4vw;
+  user-select: none;
+  background-color: rgba(0,0,0,0.3);
+  height: 7vh;
   margin: 0.25vw;
   text-wrap: wrap;
   display: flex;
+  text-align: center;
   align-items: center;
   justify-content: center;
-  width: 18vw;
+  width: 22vw;
+  color: white;
 
-  font-size: 3vw;
+  border-bottom: 5px solid rgba(0,0,0,0.4);
+  border-right: 5px solid rgba(0,0,0,0.4);
+  font-size: 2vh;
+  transition: all 100ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.first_row {
+.radio_button:hover {
+  border-bottom: 5px solid rgba(0,0,0,0.0);
+  border-right: 5px solid rgba(0,0,0,0.0);
+
+}
+
+.radio_selected {
+  background-color: rgba(0,0,0,0.7);
+}
+
+.forth_row {
   display: flex;
   justify-content: space-around;
   align-items: center;
 
 }
-.first_row_button_container {
-  width: 35vw;
-}
 
-.first_row_button_container button {
+.forth_row_button_container button {
   width: 15vw;
-  font-size: 3vw;
+  font-size: 2vh;
 }
 
 label {
@@ -132,10 +151,6 @@ label {
   border-radius: 0vw 2.5vw 2.5vw 0vw;
 }
 
-.radio_selected {
-  background-color: orange;
-}
-
 .third_row {
   display: flex;
   justify-content: center;
@@ -155,21 +170,23 @@ label {
   border-bottom-right-radius: 2.5vh;
 }
 
-.forth_row {
+.first_row {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.forth_row button {
-  height: 4vw;
+.first_row button {
+  height: 7vh;
   margin: 0.25vw;
-  width: 20vw;
+  width: 30vw;
+  font-size: 2vh;
 }
 
 #notification {
+  user-select: none;
   position: absolute;
-  top: 0%;
+  top: 70vh;
   right: 0%;
   width: 30vw;
   height: 20vw;
@@ -186,39 +203,38 @@ label {
 }
 
 .notification_hide {
-  transform: translateY(-150%);
-  transition: transform 1000ms cubic-bezier(0.19, 1, 0.22, 1);
+  opacity: 0;
+  transition: opacity 1000ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .notification_show {
-  transform: translateY(0%);
+  opacity: 1;
 }
 
 #critical {
   position: absolute;
-  top: 0%;
+  top: 70vh;
   left: 0%;
-  width: 20vw;
-  height: 10vw;
+  width: 30vw;
+  height: 20vw;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 2vw;
   margin: 1vw;
 
-  border: 1vw solid orange;
-  background-color: skyblue;
-  transition: transform 100ms cubic-bezier(0.23, 1, 0.320, 1);
+  color: red;
+  font-size: 3vw;
+  background-color: rgba(0, 0, 0, 1);
 }
 
-/*  TODO !!! Add this class for few seconds */
 .critical_hide {
-  transform: translateY(-150%);
-  transition: transform 1000ms cubic-bezier(0.19, 1, 0.22, 1);
+  opacity: 0;
+  transition: opacity 1000ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .critical_show {
-  transform: translateY(0%);
+  opacity: 1;
 }
 
 @media only screen and (orientation: landscape) {
@@ -246,6 +262,12 @@ body {
   border-top: 1px solid black;
   border-left: 1px solid black;
   transition: transform 500ms cubic-bezier(0.455, 0.03, 0.515, 0.955);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.25vh;
+  text-align: center;
 }
 
 .unit_cell:hover {
@@ -288,4 +310,24 @@ body {
   border-top: 1px solid black;
   border-right: none;
   border-bottom: none;
+}
+
+::-webkit-scrollbar {
+  width: 2vw;
+  background-color: #000;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 1vw;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: 2px solid #777;
+  /* border-radius: 1vw; */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #777;
 }
