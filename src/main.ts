@@ -223,6 +223,7 @@ function makeAndPopulateCells(numberOfCells:number) {
             let element = document.createElement('div');
             element.style.width = (100 / numberOfCells) + '%';
             element.style.height = (100 / numberOfCells) + '%';
+            element.title = x.toString() + ',' + y.toString();
             element.classList.add('unit_cell');
 
             CELL_CONTAINER.getElement().appendChild(element);
