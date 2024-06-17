@@ -25,6 +25,7 @@ interface DataStructure {
     get(index:number):coordinates;
 
     // Advanced
+    getType():string;
     pushAll(arr:coordinates[]):void;
     getLength():number;
     removeIndex(index:number):coordinates;
@@ -76,6 +77,9 @@ class Queue implements DataStructure{
         this.length = this.array.length-1;
         return this.array.splice(index,1)[0];
     }
+    getType() {
+        return 'Queue';
+    }
 }
 
 // Stack data structure
@@ -124,6 +128,9 @@ class Stack implements DataStructure {
         this.length = this.array.length-1;
         return this.array.splice(this.array.length-index-1,1)[0];
     }
+    getType() {
+        return 'Stack';
+    }
 }
 
 // Same as Queue data structure but remove()
@@ -134,32 +141,115 @@ class randomRemove extends Queue {
         let randomIndex = Math.floor(Math.random()*size);
         return super.removeIndex(randomIndex);
     }
+    getType() {
+        return 'randomRemove';
+    }
 }
 
-// same as Stack but when adding neighbours,
-//     they are added in a random order 
-class randomPushAll extends Stack {
-    pushAll(arr: coordinates[]): void {
-    let newArr = shuffleArray(arr);
-    newArr.forEach(ele=>{
-        super.push(ele);
+// // same as Stack but when adding neighbours,
+// //     they are added in a random order 
+// class randomPushAll extends Stack {
+//     pushAll(arr: coordinates[]): void {
+//     let newArr = shuffleArray(arr);
+//     newArr.forEach(ele=>{
+//         super.push(ele);
+//         })
+//     }
+// }
+
+class randomPushAll implements DataStructure {
+    // Basic
+    protected arr: coordinates[];
+    protected tandemArr: number[];
+    public length:number;
+    protected start:coordinates;
+    protected end:coordinates;
+    protected distance: store2DArrayData<number>;
+    
+    
+    constructor(start:coordinates,end:coordinates) {
+        this.length = 0;
+        this.arr = [];
+        this.tandemArr = [];
+        this.start = start;
+        this.end = end;
+        this.distance = new store2DArrayData(0,0);
+    }
+
+    push(coord:coordinates) {
+
+        this.tandemArr.push(this.computeDistanceValue(coord));
+        this.arr.push(coord);
+        this.length++;
+
+    };
+
+    remove():coordinates {
+        let mostAppealIndex = 0;
+        for (let index = 1; index < this.tandemArr.length; index++) {
+            const currentAppeal = this.tandemArr[index];
+            if (this.tandemArr[mostAppealIndex] >= currentAppeal) {
+                mostAppealIndex = index;
+            }
+        }
+        let coord = this.arr[mostAppealIndex];
+        this.arr.splice(mostAppealIndex,1);
+        this.tandemArr.splice(mostAppealIndex,1);
+        
+        this.length = this.arr.length
+        return coord;
+    }
+
+    contains(coord:coordinates):boolean {
+        for (let index = 0; index < this.arr.length; index++) {
+            if (isSameCordinate(coord,this.arr[index])) return true;
+        }
+        return false;
+    }
+
+
+    get(index:number):coordinates {
+        // Currently Not implemented
+        return [-1,-1];
+    }
+
+    // Advanced
+    pushAll(arr:coordinates[]):void {
+        arr.forEach(ele => {
+            this.push(ele);
         })
     }
-}
 
-
-function shuffleArray<T>(array: T[]): T[] {
-    // Create a copy of the array to avoid mutating the original array
-    const shuffledArray = array.slice();
-    
-    // Fisher-Yates shuffle algorithm
-    for (let i = shuffledArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    getLength():number {
+        return this.arr.length;
     }
-    
-    return shuffledArray;
+
+    removeIndex(index:number):coordinates {
+        // Not implemented
+        this.length = this.arr.length-1
+        return [-1,-1];
+    }
+
+    // Returns the coordinates appeal
+    private computeDistanceValue(coord:coordinates) {
+        
+        let g = this.distance.get(coord);
+        let h = Math.pow(Math.abs(this.end[0]-coord[0]),2)
+              + Math.pow(Math.abs(this.end[1]-coord[1]),2);
+
+        // TODO !!! G needs to passsed here and h should be computed
+        return g+Math.pow(h,1/2);
+    }
+
+    getType() {
+        return 'randomPushAll';
+    }
+
+    setDistance(dist: store2DArrayData<number>) {
+        this.distance = dist;
+    }
 }
+
 
 // 0 means nothing set
 // 1 means can explore
@@ -254,6 +344,12 @@ class generalSearchClass {
     // Returns true if successfull
     private initialize() {
         if (this.state.getCellArray().isStartEndSet()) {
+            console.log("type:",this.toDoDataStructure.getType())
+            if (this.toDoDataStructure.getType()=="randomPushAll") {
+                let randomPushAll = this.toDoDataStructure as randomPushAll;
+                randomPushAll.setDistance(this.distance);
+                console.log("distance matrix set");
+            }
             this.toDoDataStructure.push(this.state.getCellArray().getStart());
             this.distance.set(this.state.getCellArray().getStart(),0);
             this.mode = 1;

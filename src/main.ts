@@ -186,7 +186,9 @@ function addEventListenersOnSimulationButtons() {
                     SEARCH = new generalSearchClass(STATE,new randomRemove());
                     break;
                 case 'randPath':
-                    SEARCH = new generalSearchClass(STATE,new randomPushAll());
+                    let start = STATE.getCellArray().getStart();
+                    let end = STATE.getCellArray().getEnd();
+                    SEARCH = new generalSearchClass(STATE,new randomPushAll(start,end));
                     break;
                 default:
                     fatalError('ERROR: 200');
