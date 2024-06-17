@@ -491,7 +491,7 @@ class generalSearchClass {
         
         let element = this.state.getCellArray().getCell(coord).getElement();
         element.classList.add('unit_cell_path');
-        element.style.backgroundColor = 'orange';
+        element.style.backgroundColor = 'rgba(255,255,0,0.4)';
         
     }
 
@@ -511,7 +511,8 @@ class generalSearchClass {
             return;
         }
 
-        let color = "hsl(" + ((currentDistance%25)/25)*360 +",75%,65%)";
+        // let color = "hsla(" + ((currentDistance%25)/25)*360 +",100%,50%,50%)";
+        let color = "rgba(255,255,255,0.4)";
         element.classList.add('unit_cell_explored');
         element.style.backgroundColor = color;
         element.innerHTML = currentDistance.toString();

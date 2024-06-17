@@ -1,8 +1,8 @@
 # AlgorithmVisualizer
 
 ### TODO
-1) Polish styling
 1) Slider Styling
+1) ~~Polish styling~~
 1) ~~Add css~~
 1) ~~clear does not work when board is partially filled (ex. only start is set)~~
 1) ~~Reduce max number of cells that can be added~~
