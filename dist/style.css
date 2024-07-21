@@ -299,6 +299,22 @@ label {
   border-bottom: none;
 }
 
+#code-button, #help-button {
+  position: absolute;
+  bottom: -30%;
+  padding: 0.5em;
+  margin: 0.5em;
+  border-radius: 1em;
+}
+
+#code-button {
+  left: 0%;
+}
+
+#help-button {
+  right: 0%;
+}
+
 ::-webkit-scrollbar {
   width: 2vw;
   background-color: #000;
@@ -482,7 +498,13 @@ label {
     font-size: 3vh;
   }
 
-  @media (hover: none) {
-
+  #code-button {
+    top: 0%;
+  }
+  
+  #help-button {
+    left: 0%;
+    bottom: 0%;
+    right: auto;
   }
 }
