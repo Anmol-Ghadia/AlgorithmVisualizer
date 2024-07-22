@@ -4,33 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style2.css">
 </head>
 <body>
   <main>
-    <div class="container">
+    <div id="cell_container_wrapper">
       <div id="cell_container"></div>
     </div>
-    <div class="toolbar">
-      <div class="control_wrapper">
-        <div class="first_row">
-          <button type="button" id="random_maze_button">Generate Walls</button>
-          <button type="button" id="clear_board_button">Reset</button>
-        </div>
-        <div class="second_row">
-          <div id="bfs_radio" class="radio_button">Breadth First Search</div>
-          <div id="dfs_radio" class="radio_button">Depth First Search</div>
-          <div id="dijkstra_radio" class="radio_button">Random Explore</div>
-          <div id="a_star_radio" class="radio_button">A*</div>
-        </div>
-        <div class="third_row">
-          <div class="third_row_button_container">
+    <div id="toolbar">
+      <div id="control_wrapper">
+        <div id="first_block">
+          <div id="first_block_left">
+            <button type="button" id="random_maze_button">Generate Walls</button>
+            <button type="button" id="clear_board_button">Reset</button>
+          </div>
+          <div id="first_block_right">
             <button type="button" id="start_button">Start</button>
             <button type="button" id="pause_button" disabled>Pause</button>
             <button type="button" id="step_button">Step</button>
           </div>
         </div>
-        <div class="forth_row">
+        <div id="second_block">
+          <button id="bfs_radio" class="radio_button">Breadth First Search</button>
+          <button id="dfs_radio" class="radio_button">Depth First Search</button>
+          <button id="dijkstra_radio" class="radio_button">Random Explore</button>
+          <button id="a_star_radio" class="radio_button">A*</button>
+        </div>
+        <div id="third_block">
+
           <label for="number_of_cells"> Cell Count
             <input type="range" name="number_of_cells" id="cell_count_slider"
               min="6" max="30" step="1" value="10">
@@ -42,9 +43,9 @@
         </div>
       </div>
     </div>
-    <button id="code-button" onclick="window.location.href = 'https://github.com/Anmol-Ghadia/AlgorithmVisualizer'">code</button>
-    <button id="help-button">help</button>
   </main>
+  <button id="code-button" onclick="window.location.href = 'https://github.com/Anmol-Ghadia/AlgorithmVisualizer'">code</button>
+  <button id="help-button">help</button>
   <div id="notification" class="notification_hide">Notification here</div>
   <div id="critical" class="critical_hide">Errors here</div>
 </body>
