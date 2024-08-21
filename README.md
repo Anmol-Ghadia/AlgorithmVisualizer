@@ -1,4 +1,4 @@
-# Pathfinding Algorithm Visualizer
+# [Pathfinding Algorithm Visualizer](https://www.students.cs.ubc.ca/~aghadia/AlgorithmVisualizer/)
 This project is a web-based tool designed to visualize various pathfinding algorithms in action. It provides an interactive environment where users can see how algorithms like Breadth-First Search (`BFS`), Depth-First Search (`DFS`), Random Exploration, and A* (`A-star`) work in finding the shortest path from a starting point to a target node on a grid.
 
 ## Features:
@@ -24,7 +24,7 @@ This project is a web-based tool designed to visualize various pathfinding algor
 1) Responsive Design: Ensures the tool works well on both desktop and mobile browsers.
 
 ## Demo
-Try the demo at this [link](). Visit the Pathfinding Algorithm Visualizer to see the tool in action.
+Try the demo at this [link](https://www.students.cs.ubc.ca/~aghadia/AlgorithmVisualizer/). Visit the Pathfinding Algorithm Visualizer to see the tool in action.
 
 ---
 ### Developer Instructions
